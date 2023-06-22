@@ -5,6 +5,6 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY --from=build /app/target/Banking-App-0.0.1-SNAPSHOT.jar Banking-App-0.0.1-SNAPSHOT.jar
+COPY --from target/Banking-App-0.0.1-SNAPSHOT.jar Banking-App-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/Banking-App-0.0.1-SNAPSHOT.jar"]

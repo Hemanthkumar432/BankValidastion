@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bank Account Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    form {
+      max-width: 400px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    input[type="button"] {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    input[type="button"]:hover {
+      background-color: #45a049;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .dialog {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 4px;
+      max-width: 400px;
+    }
+
+    .content {
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+<h1>Bank Account Details</h1>
+<form id="bankAccountForm">
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" required placeholder="Enter Name"><br>
+
+  <label for="ifsc">IFSC:</label>
+  <input type="text" id="ifsc" name="ifsc" required placeholder="Enter IFSC code"><br>
+
+  <label for="accountNumber">Account Number:</label>
+  <input type="text" id="accountNumber" name="accountNumber" required placeholder="Enter Account Number"><br>
+
+  <label for="panNumber">PAN Number:</label>
+  <input type="text" id="panNumber" name="panNumber" required placeholder="Enter PAN Number (example: DTHPG3189P)"><br>
+
+  <label for="aadharNumber">Aadhar Number:</label>
+  <input type="text" id="aadharNumber" name="aadharNumber" required placeholder="Enter Aadhar Number (example: 1234 5678 9012)"><br>
+
+  <input type="button" value="Submit" onclick="submitForm()">
+</form>
+<script>
+    function submitForm() {
+      var form = document.getElementById("bankAccountForm");
+      var formData = {
+        name: form.name.value,
+        ifsc: form.ifsc.value,
+        accountNumber: form.accountNumber.value,
+        pan: form.panNumber.value,
+        aadhar: form.aadharNumber.value
+      };
+
+      var sr = new XMLHttpRequest();
+      sr.open("POST", "/bank-accounts");
+      sr.setRequestHeader("Content-Type", "application/json");
+      sr.onload = function () {
+        if (sr.status === 200) {
+          console.log("Success:", sr.responseText);
+          try {
+            var responseData = JSON.parse(sr.responseText);
+            var dialogMessage = "IFSC Details.\n\n";
+            dialogMessage += "Branch: " + responseData.BRANCH + "\n";
+            dialogMessage += "Bank: " + responseData.BANK + "\n";
+            showDialog(dialogMessage);
+          } catch (error) {
+            console.log("Invalid JSON response:", error);
+            alert("Invalid JSON response received.");
+          }
+        } else if (sr.status === 400) {
+          console.log("Validation Error:", sr.responseText);
+          alert(sr.responseText);
+        } else {
+          console.log("Error:", sr.statusText);
+          alert(sr.responseText);
+        }
+      };
+
+      sr.onerror = function () {
+        console.log("Request failed.");
+        alert(sr.responseText);
+      };
+      sr.send(JSON.stringify(formData));
+    }
+
+    function showDialog(message) {
+      var modal = document.createElement("div");
+      modal.classList.add("modal");
+
+      var dialog = document.createElement("div");
+      dialog.classList.add("dialog");
+
+      var content = document.createElement("div");
+      content.classList.add("content");
+      content.textContent = message;
+
+      var confirmButton = document.createElement("button");
+      confirmButton.textContent = "Confirm";
+      confirmButton.addEventListener("click", function () {
+        modal.remove();
+      });
+
+      dialog.appendChild(content);
+      dialog.appendChild(confirmButton);
+      modal.appendChild(dialog);
+      document.body.appendChild(modal);
+    }
+  </script>
+</body>
+</html>

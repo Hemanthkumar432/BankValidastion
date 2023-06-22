@@ -124,6 +124,7 @@
             dialogMessage += "Branch: " + responseData.BRANCH + "\n";
             dialogMessage += "Bank: " + responseData.BANK + "\n";
             showDialog(dialogMessage);
+            alert("Form has correct data, you can submit");
           } catch (error) {
             console.log("Invalid JSON response:", error);
             alert("Invalid JSON response received.");

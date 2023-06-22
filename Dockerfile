@@ -5,6 +5,6 @@ RUN mvn clean package -DskipTests
 
 FROM openjdk:17-jdk-slim
 WORKDIR /app
-COPY --from=build /app/target/spring-boot-starter-parent-2.7.12.jar ./spring-boot-starter-parent.jar
+COPY --from=build /app/target/Banking-App-0.0.1-SNAPSHOT.jar Banking-App-0.0.1-SNAPSHOT.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "spring-boot-starter-parent.jar"]
+ENTRYPOINT ["java", "-jar", "/Banking-App-0.0.1-SNAPSHOT.jar"]
